@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   get 'contacts', to: 'contacts#index'
+  root to: "contacts#index"
   
   devise_for :parent_users, controllers: {
     sessions: 'parent_users/sessions',
@@ -14,6 +15,6 @@ Rails.application.routes.draw do
 
   resources :contacts
 
-  root to: "contacts#index"
+  
 
 end
