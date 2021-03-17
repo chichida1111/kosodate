@@ -2,6 +2,8 @@ class Contact < ApplicationRecord
 
   belongs_to :parent_user
   has_one_attached :image
+  has_many :parent_messages
+  has_many :teacher_messages
 
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to_active_hash :group

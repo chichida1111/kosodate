@@ -2,8 +2,8 @@ class ContactsController < ApplicationController
   before_action :authenticate_parent_user!, except: [:show, :index ]
 
   def destroy
-    contact =Contact.find(params[:id])
-    contact.destroy
+    @contact =Contact.find(params[:id])
+    @contact.destroy
     redirect_to root_path
   end
 
@@ -13,12 +13,15 @@ class ContactsController < ApplicationController
 
   def edit
     @contact = Contact.find(params[:id])
+    unless @contact.parent_user_id == current_parent_user.id
+      redirect_to root_path
+    end
   end
 
   def update
-    contact = Contact.find(params[:id])
-    if contact.update(contact_params)
-      redirect_to contact_path(contact.id), method: :get
+    @contact = Contact.find(params[:id])
+    if @contact.update(contact_params)
+      redirect_to contact_path(@contact.id), method: :get
     else
       render edit
     end
@@ -26,6 +29,10 @@ class ContactsController < ApplicationController
 
   def show
     @contact = Contact.find(params[:id])
+    @parent_message = ParentMessage.new
+    @parent_messages = @contact.parent_messages.order(id: :DESC)
+    @teacher_message = TeacherMessage.new
+    @teacher_messages = @contact.teacher_messages.order(id: :DESC)
   end
 
   def new

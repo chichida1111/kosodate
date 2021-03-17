@@ -4,6 +4,8 @@ class TeacherUser < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  has_many :teacher_messages
+
   extend ActiveHash::Associations::ActiveRecordExtensions
   belongs_to_active_hash :group
 

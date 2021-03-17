@@ -4,28 +4,28 @@
         <%= image_tag @contact.image %>
 </div>
 
+
   <% if parent_user_signed_in? && current_parent_user.id == @contact.parent_user_id %>
         <div class="prototype__manage">
-          <%= link_to "編集する", edit_contact_path(@contact.id), class: :prototype__btn %>
-          <%= link_to "削除する", contact_path(@contact.id), method: :delete, class: :prototype__btn %>
+          <%= link_to "連絡帳を編集する", edit_contact_path(@contact.id), class: :prototype__btn %>
+          <%= link_to "連絡帳を削除する", contact_path(@contact.id), method: :delete, class: :prototype__btn %>
         </div>
-
-      <%= form_with(model: @message, local: true) do |f| %>
+      <%= form_with(model:[@contact, @parent_message] , local: true) do |f| %>
         <div class="field">
           <%= f.label :attendance_id, "出欠席" %><br />
-          <%= f.text_field :attendance_id %>
+          <%= f.collection_select(:attendance_id, Attendance.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :body_temperature_id, "体温" %><br />
-          <%= f.text_field :body_temperature_id %>
+          <%= f.collection_select(:body_temperature_id, BodyTemperature.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :pick_up_time_id, "お迎えの時間" %><br />
-          <%= f.text_field :pick_up_time_id %>
+          <%= f.collection_select(:pick_up_time_id, PickUpTime.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :pick_up_person_id, "お迎えの人" %><br />
-          <%= f.text_field :pick_up_person_id %>
+          <%= f.collection_select(:pick_up_person_id, PickUpPerson.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :parent_comment, "特記事項" %><br />
@@ -34,23 +34,23 @@
         <div class="actions">
           <%= f.submit "送信する", class: :form__btn  %>
         </div>
-    <% end %>
+      <% end %>
   <% end %> 
 
+
  <% if teacher_user_signed_in? %>
-    <%= form_with(model: @message, local: true) do |f| %>
-        
+    <%= form_with(model:[@contact, @teacher_message] , local: true) do |f| %>     
         <div class="field">
           <%= f.label :physical_condition_id, "体調" %><br />
-          <%= f.text_field :physical_condition_id %>
+          <%= f.collection_select(:physical_condition_id, PhysicalCondition.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :school_lunch_id, "給食" %><br />
-          <%= f.text_field :school_lunch_id %>
+          <%= f.collection_select(:school_lunch_id, SchoolLunch.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
         <div class="field">
           <%= f.label :defecation_id, "排便" %><br />
-          <%= f.text_field :defecation_id %>
+          <%= f.collection_select(:defecation_id, Defecation.all, :id, :name, {}, {class:"select-box", id:"class"}) %>
         </div>
           <div class="field">
           <%= f.label :teacher_comment, "特記事項" %><br />
@@ -60,11 +60,34 @@
           <%= f.label :image, "本日の写真" %><br />
           <%= f.file_field :image %>
         </div>
-
-      <div class="actions">
+        <div class="actions">
           <%= f.submit "送信する", class: :form__btn  %>
-      </div>
-
+        </div>
     <% end %>
-  <% end %> 
+ <% end %> 
 
+
+<% if parent_user_signed_in? && current_parent_user.id == @contact.parent_user_id || teacher_user_signed_in? %>
+<li class="comments_list">
+  <% @parent_messages.each do |parent_message| %>
+    <p> 
+     <%= parent_message.created_at.to_s(:datetime_jp) %>
+     <%= parent_message.attendance.name %> 
+     <%= parent_message.body_temperature.name %>
+     <%= parent_message.pick_up_time.name %>
+     <%= parent_message.pick_up_person.name %>
+   </p>
+  <% end %>
+</li>
+<li class="comments_list">
+  <% @teacher_messages.each do |teacher_message| %>
+    <p> 
+     <%= teacher_message.created_at.to_s(:datetime_jp) %>
+     <%= teacher_message.physical_condition.name %> 
+     <%= teacher_message.school_lunch.name %>
+     <%= teacher_message.defecation.name %>
+     <%= image_tag teacher_message.image, class: 'teacher_message-image' if teacher_message.image.attached? %>
+   </p>
+  <% end %>
+</li>
+<% end %>
