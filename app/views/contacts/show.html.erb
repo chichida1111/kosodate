@@ -39,6 +39,12 @@
 
 
  <% if teacher_user_signed_in? %>
+
+<%= link_to(new_contact_service_path(@contact.id), class: 'purchase-btn') do %>
+  <span class='purchase-btn-text'>精算をお願いする</span>
+  <%= image_tag 'icon_camera.png' , size: '185x50' ,class: "purchase-btn-icon" %>
+<% end %>
+
     <%= form_with(model:[@contact, @teacher_message] , local: true) do |f| %>     
         <div class="field">
           <%= f.label :physical_condition_id, "体調" %><br />
@@ -68,6 +74,24 @@
 
 
 <% if parent_user_signed_in? && current_parent_user.id == @contact.parent_user_id || teacher_user_signed_in? %>
+<li class="comments_list">
+  <% @services.each do |service| %>
+    <p> 
+     <%= service.service_type.name %>
+     <%= "#{service.unit_price.unit_price}円" %>
+     <%= "#{service.number_of_times}回" %>
+     <%= "総額#{service.unit_price.unit_price * service.number_of_times}円" %>
+   <%# もしitem_orderテーブルに保存されていたら %>
+   <% if service.service_order != nil %> 
+     <div class='settlement'>
+       <b>決済済です</b>
+     </div>
+   <% else %> 
+     <%= link_to '決済する', order_service_path(service.id), method: :post %>
+  <% end %> 
+   </p>
+  <% end %>
+</li>
 <li class="comments_list">
   <% @parent_messages.each do |parent_message| %>
     <p> 
