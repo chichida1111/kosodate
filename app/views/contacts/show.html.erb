@@ -4,12 +4,17 @@
         <%= image_tag @contact.image %>
 </div>
 
+ <div class="prototype__image">
+        <%= "保護者:#{@contact.parent_user.last_name_p_j}#{@contact.parent_user.first_name_p_j}さん" %>
+</div>
+
 
   <% if parent_user_signed_in? && current_parent_user.id == @contact.parent_user_id %>
         <div class="prototype__manage">
           <%= link_to "連絡帳を編集する", edit_contact_path(@contact.id), class: :prototype__btn %>
           <%= link_to "連絡帳を削除する", contact_path(@contact.id), method: :delete, class: :prototype__btn %>
         </div>
+
       <%= form_with(model:[@contact, @parent_message] , local: true) do |f| %>
         <div class="field">
           <%= f.label :attendance_id, "出欠席" %><br />
@@ -81,12 +86,12 @@
      <%= "#{service.unit_price.unit_price}円" %>
      <%= "#{service.number_of_times}回" %>
      <%= "総額#{service.unit_price.unit_price * service.number_of_times}円" %>
-   <%# もしitem_orderテーブルに保存されていたら %>
+   <%# もしservice_orderテーブルに保存されていたら %>
    <% if service.service_order != nil %> 
      <div class='settlement'>
        <b>決済済です</b>
      </div>
-   <% else %> 
+   <% elsif parent_user_signed_in? %> 
      <%= link_to '決済する', order_service_path(service.id), method: :post %>
   <% end %> 
    </p>

@@ -1,8 +1,13 @@
 <%= form_with(model:[@contact, @service] , local: true) do |f| %>
+
+<%= render 'contacts/error_messages', model: f.object %>
+
 <div>
+<%= f.label :ervice_type_id, "決済項目" %><br />
 <%= f.collection_select(:service_type_id, ServiceType.all, :id, :name, {}, {class:"select-box", id:"item-category"}) %>
 </div>
 <div>
+<%= f.label :ervice_type_id, "単価" %><br />
 <%= f.collection_select(:unit_price_id, UnitPrice.all, :id, :unit_price, {}, {class:"select-box", id:"item-category"}) %>
 </div>
 <div class="field">
@@ -16,4 +21,5 @@
 <div class="actions">
   <%= f.submit "決済をお願いする", class: :form__btn  %>
 </div>
+
 <% end %>

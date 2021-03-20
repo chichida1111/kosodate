@@ -12,13 +12,13 @@ class ServicesController < ApplicationController
     if @service.save
       redirect_to contact_path(@contact.id), method: :get
     else
-      redirect_to root_path
+      render :new
     end
   end
 
   def order # 購入する時のアクションを定義
     redirect_to new_card_path and return unless current_parent_user.card.present?
-  
+
     Payjp.api_key = ENV["PAYJP_SECRET_KEY"] # 環境変数を読み込む
     customer_token = current_parent_user.card.customer_token # ログインしているユーザーの顧客トークンを定義
     Payjp::Charge.create(
